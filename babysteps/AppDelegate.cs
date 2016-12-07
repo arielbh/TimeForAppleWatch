@@ -1,4 +1,6 @@
-﻿using Foundation;
+﻿using System;
+using Foundation;
+using HealthKit;
 using UIKit;
 
 namespace babysteps
@@ -23,6 +25,16 @@ namespace babysteps
 			SessionManager.SharedManager.StartSession();
 
 			return true;
+		}
+		HKHealthStore _healthStore = new HKHealthStore();
+
+		public override void ShouldRequestHealthAuthorization(UIApplication application)
+		{
+			_healthStore.HandleAuthorizationForExtension((bool success, NSError error) =>
+			{
+				if (error != null && !success)
+					Console.WriteLine($"You didn't allow HealthKit to access these read/write data types. In your app, try to handle this error gracefully when a user decides not to provide access. The error was: {error.LocalizedDescription}. If you're using a simulator, try it on a device.");
+			});		
 		}
 
 		public override void OnResignActivation(UIApplication application)
@@ -49,6 +61,33 @@ namespace babysteps
 		{
 			// Restart any tasks that were paused (or not yet started) while the application was inactive. 
 			// If the application was previously in the background, optionally refresh the user interface.
+		
+		        ValidateAuthorization ();
+
+		}
+
+		private void ValidateAuthorization()
+		{
+			var typesToShare = new NSSet(HKQuantityType.Create(HKQuantityTypeIdentifier.HeartRate), HKQuantityType.Create(HKQuantityTypeIdentifier.ActiveEnergyBurned), HKObjectType.GetWorkoutType());
+			var typesToRead = new NSSet(HKQuantityType.Create(HKQuantityTypeIdentifier.HeartRate), HKQuantityType.Create(HKQuantityTypeIdentifier.ActiveEnergyBurned));
+
+			_healthStore.RequestAuthorizationToShare(
+					typesToShare,
+					typesToRead,
+					ReactToHealthCarePermissions);
+		}
+
+		void ReactToHealthCarePermissions(bool success, NSError error)
+		{
+			//var access = _healthStore.GetAuthorizationStatus(HKObjectType.GetQuantityType(HKQuantityTypeIdentifierKey.HeartRate));
+			//if (access.HasFlag(HKAuthorizationStatus.SharingAuthorized))
+			//{
+			//	HeartRateModel.Instance.Enabled = true;
+			//}
+			//else
+			//{
+			//	HeartRateModel.Instance.Enabled = false;
+			//}
 		}
 
 		public override void WillTerminate(UIApplication application)
