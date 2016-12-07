@@ -3,6 +3,7 @@
 using WatchKit;
 using Foundation;
 using System.Collections.Generic;
+using UserNotifications;
 
 namespace babysteps.watchExtension
 {
@@ -30,7 +31,28 @@ namespace babysteps.watchExtension
 			// This method is called when the watch view controller is about to be visible to the user.
 			Console.WriteLine("{0} will activate", this);
 			LoadTableRows();
+			RegisterNotification();
+		}
 
+		void RegisterNotification()
+		{
+			UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert, (approved, err) =>
+			{
+				var content = new UNMutableNotificationContent();
+				content.Title = "Diaper!";
+				content.Body = "It's time!";
+
+				//content.CategoryIdentifier = "ChangeDiaper";
+				var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(10.0, false);
+				var request = UNNotificationRequest.FromIdentifier("ChangeDiaper", content, trigger);
+
+				UNUserNotificationCenter.Current.AddNotificationRequest(request, Completion);
+				UNUserNotificationCenter.Current.Delegate = new UserNotificationCenterDelegate();
+			});	
+		}
+
+		void Completion(NSError obj)
+		{
 		}
 
 		void LoadTableRows()
@@ -57,5 +79,26 @@ namespace babysteps.watchExtension
 			Console.WriteLine("Row selected:" + rowData);
 			PushController($"{rowData}Controller", string.Empty);
 		}
+	}
+
+	public class UserNotificationCenterDelegate : UNUserNotificationCenterDelegate
+	{
+		#region Constructors
+		public UserNotificationCenterDelegate()
+		{
+		}
+		#endregion
+
+		#region Override Methods
+		public override void WillPresentNotification(UNUserNotificationCenter center, UNNotification notification, Action<UNNotificationPresentationOptions> completionHandler)
+		{
+			// Do something with the notification
+			Console.WriteLine("Active Notification: {0}", notification);
+
+			// Tell system to display the notification anyway or use
+			// `None` to say we have handled the display locally.
+			completionHandler(UNNotificationPresentationOptions.Alert);
+		}
+		#endregion
 	}
 }
