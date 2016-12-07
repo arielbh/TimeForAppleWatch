@@ -131,6 +131,18 @@
     <Compile Include="InterfaceController.designer.cs">
       <DependentUpon>InterfaceController.cs</DependentUpon>
     </Compile>
+    <Compile Include="RowController.cs" />
+    <Compile Include="RowController.designer.cs">
+      <DependentUpon>RowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FeedingController.cs" />
+    <Compile Include="FeedingController.designer.cs">
+      <DependentUpon>FeedingController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WorkoutController.cs" />
+    <Compile Include="WorkoutController.designer.cs">
+      <DependentUpon>WorkoutController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\WatchOS\Xamarin.WatchOS.AppExtension.CSharp.targets" />
 </Project>

@@ -10,18 +10,18 @@ using System.CodeDom.Compiler;
 
 namespace babysteps.watchExtension
 {
-    [Register ("InterfaceController")]
-    partial class InterfaceController
+    [Register ("RowController")]
+    partial class RowController
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        WatchKit.WKInterfaceTable menuTable { get; set; }
+        public WatchKit.WKInterfaceLabel titleLabel { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
-            if (menuTable != null) {
-                menuTable.Dispose ();
-                menuTable = null;
+            if (titleLabel != null) {
+                titleLabel.Dispose ();
+                titleLabel = null;
             }
         }
     }
