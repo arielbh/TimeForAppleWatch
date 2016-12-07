@@ -11,6 +11,8 @@ namespace babysteps.watchExtension
 		public override void ApplicationDidFinishLaunching()
 		{
 			// Perform any final initialization of your application.
+			SessionManager.SharedManager.StartSession();
+
 		}
 
 		public override void ApplicationDidBecomeActive()

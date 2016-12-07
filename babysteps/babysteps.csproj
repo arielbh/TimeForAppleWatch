@@ -119,6 +119,7 @@
     <Compile Include="ViewController.designer.cs">
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="SessionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\babysteps.png" />

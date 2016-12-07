@@ -13,8 +13,16 @@ namespace babysteps
     [Register ("ViewController")]
     partial class ViewController
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITableView Table { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
+            if (Table != null) {
+                Table.Dispose ();
+                Table = null;
+            }
         }
     }
 }

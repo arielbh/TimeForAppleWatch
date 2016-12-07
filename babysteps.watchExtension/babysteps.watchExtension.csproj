@@ -143,6 +143,9 @@
     <Compile Include="WorkoutController.designer.cs">
       <DependentUpon>WorkoutController.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\babysteps\SessionManager.cs">
+      <Link>SessionManager.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\WatchOS\Xamarin.WatchOS.AppExtension.CSharp.targets" />
 </Project>

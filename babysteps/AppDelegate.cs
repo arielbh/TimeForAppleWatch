@@ -20,6 +20,7 @@ namespace babysteps
 		{
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
+			SessionManager.SharedManager.StartSession();
 
 			return true;
 		}
