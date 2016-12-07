@@ -9,7 +9,7 @@ namespace babysteps
 {
 	public partial class ViewController : UIViewController
 	{
-		List<Feeding> _feedings = new List<Feeding>();
+		List<Message> _feedings = new List<Message>();
 
 		protected ViewController(IntPtr handle) : base(handle)
 		{
@@ -45,6 +45,18 @@ namespace babysteps
 					this.Table.ReloadData();
 				});
 			}
+			if (applicationContext.ContainsKey("HeartRate"))
+			{
+				_feedings.Add(new Message
+				{
+					Text = $"Check up Baby it got Heart Rate: {applicationContext["HeartRate"] as string}"
+
+				});
+				InvokeOnMainThread(() =>
+				{
+					this.Table.ReloadData();
+				});
+			}
 		}
 
 		public override void DidReceiveMemoryWarning()
@@ -58,10 +70,10 @@ namespace babysteps
 	public class TableSource : UITableViewSource
 	{
 
-		List<Feeding> TableItems;
+		List<Message> TableItems;
 		string CellIdentifier = "TableCell";
 
-		public TableSource(List<Feeding> items)
+		public TableSource(List<Message> items)
 		{
 			TableItems = items;
 		}
@@ -80,13 +92,28 @@ namespace babysteps
 			if (cell == null)
 			{ cell = new UITableViewCell(UITableViewCellStyle.Default, CellIdentifier); }
 
-			cell.TextLabel.Text = $"Feeding from {item.Start} and ended at {item.End}";
+			cell.TextLabel.Text = item.ToString();
 
 			return cell;
 		}
 	}
 
-	public class Feeding
+	public class Message
+	{
+
+		public string Text
+		{
+			get;
+			set;
+		}
+		public override string ToString()
+		{
+			return Text;
+		}
+		
+	}
+
+	public class Feeding : Message
 	{
 		public string Start
 		{
@@ -97,6 +124,11 @@ namespace babysteps
 		{
 			get;
 			set;
+		}
+
+		public override string ToString()
+		{
+			return $"Feeding from {Start} and ended at {End}";
 		}
 
 	}

@@ -5,11 +5,15 @@ using HealthKit;
 using System.Collections.Generic;
 using CoreFoundation;
 using System.Linq;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
 
 namespace babysteps.watchExtension
 {
     public partial class WorkoutController : WKInterfaceController, IHKWorkoutSessionDelegate
     {
+		private Subject<double> _dangerousHeartRate = new Subject<double>();
+
         public WorkoutController (IntPtr handle) : base (handle)
         {
         }
@@ -35,6 +39,9 @@ namespace babysteps.watchExtension
 									  "In your app, try to handle this error gracefully when a user decides not to provide access. " +
 									  $"The error was: {error.LocalizedDescription}. If you're using a simulator, try it on a device.");
 			});
+			_dangerousHeartRate.Where(v => v > 30.0).Subscribe(
+				v => SessionManager.SharedManager.UpdateApplicationContext(
+					new Dictionary<string, object>() { { "HeartRate", v.ToString() } })); 
 		}
 
 		private void ResetUI()
@@ -196,6 +203,10 @@ namespace babysteps.watchExtension
 
 			Action<List<HKSample>> heartRateSampler = (List<HKSample> samples) =>
 			{
+				foreach (HKQuantitySample sample in samples)
+				{
+					_dangerousHeartRate.OnNext(sample.Quantity.GetDoubleValue(heartRateUnit));
+				}
 				DispatchQueue.MainQueue.DispatchAsync(delegate
 				{
 					var sample = samples.LastOrDefault() as HKQuantitySample;
